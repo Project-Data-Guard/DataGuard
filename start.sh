@@ -8,6 +8,12 @@ touch database/database.sqlite
 # Pastikan storage & bootstrap/cache writable
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
+# Debug: cek isi public/build/
+echo "=== public/build/ ==="
+ls -la public/build/ 2>/dev/null || echo "WARNING: public/build/ tidak ada!"
+echo "=== public/build/assets/ ==="
+ls -la public/build/assets/ 2>/dev/null || echo "WARNING: public/build/assets/ tidak ada!"
+
 # Build Vite assets jika belum ada (fallback jika nixpacks tidak menyertakannya)
 if [ ! -f "public/build/manifest.json" ]; then
     echo ">>> public/build tidak ditemukan, menjalankan npm run build..."
