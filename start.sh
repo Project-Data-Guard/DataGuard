@@ -8,6 +8,14 @@ touch database/database.sqlite
 # Pastikan storage & bootstrap/cache writable
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
+# Build Vite assets jika belum ada (fallback jika nixpacks tidak menyertakannya)
+if [ ! -f "public/build/manifest.json" ]; then
+    echo ">>> public/build tidak ditemukan, menjalankan npm run build..."
+    npm run build
+else
+    echo ">>> public/build/manifest.json ditemukan, skip build."
+fi
+
 # Clear semua cache lama sebelum re-cache dengan env vars terbaru
 php artisan optimize:clear
 
