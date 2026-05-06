@@ -13,6 +13,8 @@ echo "=== public/build/ ==="
 ls -la public/build/ 2>/dev/null || echo "WARNING: public/build/ tidak ada!"
 echo "=== public/build/assets/ ==="
 ls -la public/build/assets/ 2>/dev/null || echo "WARNING: public/build/assets/ tidak ada!"
+echo "=== manifest.json ==="
+cat public/build/manifest.json 2>/dev/null || echo "WARNING: manifest.json tidak bisa dibaca!"
 
 # Build Vite assets jika belum ada (fallback jika nixpacks tidak menyertakannya)
 if [ ! -f "public/build/manifest.json" ]; then
