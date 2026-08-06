@@ -1,39 +1,26 @@
 #!/bin/bash
 set -e
 
-# Buat file SQLite jika belum ada
-mkdir -p database
-touch database/database.sqlite
+echo "===== Laravel Startup ====="
 
-# Pastikan storage & bootstrap/cache writable
-chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/views
+mkdir -p storage/framework/sessions
+mkdir -p bootstrap/cache
 
-# Debug: cek isi public/build/
-echo "=== public/build/ ==="
-ls -la public/build/ 2>/dev/null || echo "WARNING: public/build/ tidak ada!"
-echo "=== public/build/assets/ ==="
-ls -la public/build/assets/ 2>/dev/null || echo "WARNING: public/build/assets/ tidak ada!"
-echo "=== manifest.json ==="
-cat public/build/manifest.json 2>/dev/null || echo "WARNING: manifest.json tidak bisa dibaca!"
+chmod -R 775 storage bootstrap/cache || true
 
-# Build Vite assets jika belum ada (fallback jika nixpacks tidak menyertakannya)
-if [ ! -f "public/build/manifest.json" ]; then
-    echo ">>> public/build tidak ditemukan, menjalankan npm run build..."
-    npm run build
-else
-    echo ">>> public/build/manifest.json ditemukan, skip build."
-fi
-
-# Clear semua cache lama sebelum re-cache dengan env vars terbaru
 php artisan optimize:clear
 
-# Jalankan migrasi
+if [ -n "$APP_KEY" ]; then
+    php artisan config:cache
+fi
+
 php artisan migrate --force || true
 
-# Cache ulang dengan env vars yang sudah di-set
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+php artisan route:cache || true
+php artisan view:cache || true
 
-# Jalankan server
-php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+php artisan serve \
+    --host=0.0.0.0 \
+    --port=${PORT:-10000}
