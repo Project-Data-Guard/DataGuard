@@ -28,7 +28,7 @@ fi
 php artisan optimize:clear
 
 # Jalankan migrasi
-php artisan migrate --force
+php artisan migrate --force || true
 
 # Cache ulang dengan env vars yang sudah di-set
 php artisan config:cache
